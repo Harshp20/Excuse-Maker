@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Message from './components/Message';
 import Select from './components/Select'
 
@@ -14,6 +14,8 @@ export default function App() {
   const [isError, setIsError] = useState(false)
   const [category, setCategory] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
+  const excuseTextRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -42,7 +44,7 @@ export default function App() {
   };
 
   async function copyExcuse() {
-    const text = document.querySelector('#excuse_text')?.textContent;
+    const text = excuseTextRef.current?.textContent
     await navigator.clipboard.writeText(text as string);
     try {
       const copiedText = await navigator.clipboard.readText()
@@ -60,19 +62,20 @@ export default function App() {
   }
 
   return (
-    <div>
+    <div className='bg-gray-600'>
       <Select handleSelectCategory={handleSelectCategory} />
       
-      <button onClick={() => fetchExcuse(category)}>Excuse me</button>
+      <button onClick={() => fetchExcuse(category)}>Find another Excuse</button>
       {excuse && <button onClick={copyExcuse}>Copy</button>}
-      
-      <Message check={isTextCopied} text={'Excuse copied'} />
+
+      <Message check={isTextCopied} text={'Excuse copied!'} />
       <Message check={isError} text={'Could not fetch excuse'} />
       <Message check={isLoading} text={'Loading excuse...'} />
       
       {!isLoading && excuse && (
         <div>
-          <div id="excuse_text">{excuse.excuse}</div>
+          <Message check={!category} text={'Here\'s a random excuse for you!'} />
+          <div ref={excuseTextRef}>{excuse.excuse}</div>
           <div style={{textTransform: 'capitalize'}}>From Category: {excuse.category}</div>
         </div>
       )}
