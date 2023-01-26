@@ -1,3 +1,21 @@
+<h1 align="center">Excuse Maker</h1>
+<p align="center">
+<img src="https://user-images.githubusercontent.com/31449970/214804391-bfa84424-c7f0-4405-8404-960d7f6ea310.png" width='1000'>
+<br>
+  <h4 align="center">
+
+[Access here](https://harshp20.github.io/Excuse-Maker-React-Tailwind/)
+
+</h4>
+  <h3 align='center'>Excuses for all your needs</h3>
+</p>
+  <p align="center">⭐️ Star | 🔱 Fork on GitHub </p>
+  <p align="center">
+  <img src="https://img.shields.io/badge/Built%20with-React-purple" />
+  <img src="https://img.shields.io/badge/-TailwindCSS-blue" />
+  </p>
+<p align='center'><a href='https://github.com/Harshp20'><img  src='https://img.shields.io/badge/Developed%20By-Harsh%20Pradhan-red'></a></p>
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
