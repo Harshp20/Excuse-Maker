@@ -3,6 +3,8 @@ import Select from './components/Select'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy, faSnowflake } from '@fortawesome/free-regular-svg-icons'
 import { faCheck, faRotate, faCat } from '@fortawesome/free-solid-svg-icons'
+import ButtonWithIcon from './components/ButtonWithIcon'
+
 interface IExcuse {
   id: number;
   excuse: string;
@@ -11,13 +13,12 @@ interface IExcuse {
 
 export default function App() {
   const [excuse, setExcuse] = useState<IExcuse | null>(null);
-  const [isTextCopied, setIsTextCopied] = useState(getDefaultCopyBtnText())
+  const [isTextCopied, setIsTextCopied] = useState<React.ReactNode>(<ButtonWithIcon btnText='Copy' icon={faCopy} iconClasses={'text-orange-400'} />)
   const [isError, setIsError] = useState(false)
   const [category, setCategory] = useState('')
   const [isLoading, setIsLoading] = useState(true)
 
   const excuseTextRef = useRef<HTMLDivElement>(null)
-  const copyBtnRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -31,6 +32,8 @@ export default function App() {
 
   useEffect(() => {
     setIsLoading(true)
+    setIsError(false)
+    setIsTextCopied(<ButtonWithIcon btnText='Copy' icon={faCopy} iconClasses={'text-orange-400'} />)
   }, [])
 
   async function fetchExcuse(category: string, signal?: AbortSignal) {
@@ -55,9 +58,9 @@ export default function App() {
     try {
       const copiedText = await navigator.clipboard.readText()
       if (copiedText === text) {
-        setIsTextCopied(getCopyProgressStatus())
-        setTimeout(() => setIsTextCopied(getSuccessCopyBtnText()), 500)
-        setTimeout(() => setIsTextCopied(getDefaultCopyBtnText()), 1000)
+        setIsTextCopied(<ButtonWithIcon btnText='Copying' icon={faRotate} iconClasses='fa-spin text-blue-400' />)
+        setTimeout(() => setIsTextCopied(<ButtonWithIcon btnText='Copied' icon={faCheck} iconClasses='text-green-400' />), 500)
+        setTimeout(() => setIsTextCopied(<ButtonWithIcon btnText='Copy' icon={faCopy} iconClasses='text-orange-400' />), 1000)
       }
     } catch (copiedText) {
       console.error('Error while copying')
@@ -68,67 +71,42 @@ export default function App() {
     setCategory(category)
   }
 
-  function getDefaultCopyBtnText() {
-    return (<>
-      <span>Copy</span>
-      <FontAwesomeIcon className='ml-2 text-xs xs:text-sm text-orange-400' icon={faCopy} />
-    </>)
-  }
-
-  function getSuccessCopyBtnText() {
-    return (<>
-      <span>Copied</span>
-      <FontAwesomeIcon className='ml-2 text-xs xs:text-sm text-green-400' icon={faCheck} />
-    </>)
-  }
-
-  function getCopyProgressStatus() {
-    return (<>
-      <span>Copying</span>
-      <FontAwesomeIcon className='fa-spin ml-2 text-xs xs:text-sm text-blue-400' icon={faRotate} />
-    </>)
-  }
-
   return (
-    <div className=' flex flex-col gap-4'>
-      <div className='flex gap-3 items-start'>
+    <div className=' flex flex-col gap-4 text-sm xs:text-md sm:text-base'>
+      <div className='flex gap-3 items-start justify-between'>
         <Select handleSelectCategory={handleSelectCategory} />
-        <button className='text-gray-100 hover:bg-gray-700 px-3 py-3 sm:px-4 text-xs sm:text-sm rounded-sm bg-gray-800 outline-1 outline-gray-300 outline-offset-2' onClick={() => fetchExcuse(category)}>
+        <button className='text-gray-100 hover:bg-gray-700 px-3 py-2 rounded bg-gray-800 outline-1 outline-gray-300 outline-offset-2' onClick={() => fetchExcuse(category)}>
           Find Another
         </button>
-        {isError && <div className='px-2 sm:px-3 py-2 text-xs sm:text-sm w-fit border rounded text-white border-red-600'>
+        {isError && <div className='px-3 py-2 border rounded text-xs xs:text-sm text-white border-red-600'>
           Sorry, Couldn't fetch excuse!
         </div>}
       </div>
-      <div className='flex flex-col justify-between gap-3 px-4 py-2 rounded-xl bg-slate-900 text-gray-100'>
+      <div className='flex flex-col justify-between gap-3 px-4 py-2 rounded-xl bg-slate-900/[.87] text-gray-100'>
         {isLoading ?
-          <span className='pl-2 py-2 text-xs sm:text-sm font-thin'>Loading excuse...</span>
+          <span className='pl-2 py-2 font-thin'>Loading excuse...</span>
           :
-          (<div className='flex flex-row justify-between items-center'>
-            {category ?
-              <span className='text-gray-400 px-2 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm'>
-                Done
-                <FontAwesomeIcon className='animate-cat-fade-in ml-1 text-orange-500 opacity-90' icon={faCat} />
-              </span>
-              :
-              <span className='text-teal-100 pl-2 py-2 max-w-60 w-9/10 text-xs sm:text-sm'>Here's a random excuse for you!<FontAwesomeIcon className='ml-2 fa-spin' icon={faSnowflake} /></span>}
+          (isError ? <span className='text-red-500'>Failed</span>
+            : <div className='flex flex-row gap-4 justify-between items-center'>
+              {category ?
+                <span className='text-gray-400 px-2 py-2 xs:px-4 xs:py-2 '>
+                  Done
+                  <FontAwesomeIcon className='animate-cat-fade-in ml-1 text-orange-500 opacity-90' icon={faCat} />
+                </span>
+                : <span className='text-teal-100 pl-2 py-2 break-words '>Here's a random excuse for you!<FontAwesomeIcon className='ml-2 fa-spin' icon={faSnowflake} /></span>}
 
-            {excuse &&
-              <button ref={copyBtnRef} className='hover:bg-gray-700 px-3 py-2 sm:px-4 sm:py-2 rounded bg-gray-800 text-xs sm:text-sm font-semibold' onClick={copyExcuse}>
-                {isTextCopied}
-              </button>
-            }
-          </div>)
+              {excuse && <div onClick={copyExcuse}>{isTextCopied}</div>}
+            </div>)
         }
         <div className='border border-gray-600 grid p-2 items-center gap-x-4 rounded'>
           <div className='pl-2'>
-            <p className={`${isLoading && 'animate-pulse'} text-xs sm:text-sm font-semibold text-teal-100`} ref={excuseTextRef}>{excuse?.excuse || 'Patience...'}</p>
+            <p className={`${isLoading && 'animate-pulse'} font-semibold text-teal-100`} ref={excuseTextRef}>{ (isLoading && 'Patience...') || (isError && 'Awh snap...') || excuse?.excuse}</p>
           </div>
         </div>
 
-        <div className='flex items-center gap-1 justify-end text-2xs sm:text-xs'>
-          <span className='text-gray-300 font-thin text-2xs sm:text-xs'>From Category:</span>
-          <span className='capitalize'>{excuse?.category || 'Loading'}</span>
+        <div className='flex items-center gap-1 justify-end text-xs xs:text-sm'>
+          <span className='text-gray-300 font-thin'>From Category:</span>
+          {isLoading ? <span className='text-orange-400'>Loading</span> : (isError ? <span className='text-red-500'>Error</span> : <span className='capitalize text-green-400'>{excuse?.category}</span>)}
         </div>
 
       </div>

@@ -1,4 +1,4 @@
-type SelectProp = { handleSelectCategory: (val: string) => void }
+type SelectProps = { handleSelectCategory: (val: string) => void }
 
 const options = [
     { text: 'Family', value: 'family'},
@@ -12,10 +12,10 @@ const options = [
     { text: 'Gaming', value: 'gaming'}
 ]
 
-export default function Select ({ handleSelectCategory }: SelectProp) {
+export default function Select ({ handleSelectCategory }: SelectProps) {
     return (
         <select
-            className="bg-gray-300 rounded-sm px-3 py-3 sm:px-4 cursor-pointer appearance-none hover:bg-gray-200 active:bg-gray-300 outline-slate-500 outline-offset-2" 
+            className="bg-gray-300 rounded px-3 py-2 cursor-pointer appearance-none hover:bg-gray-200 active:bg-gray-300 outline-slate-500 outline-offset-2" 
             defaultValue={''}
             onChange={(e) => handleSelectCategory(e.target.value)}>
             <option value={''} disabled hidden>Select Category</option>
