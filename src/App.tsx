@@ -100,7 +100,7 @@ export default function App() {
         }
         <div className='border border-gray-600 grid p-2 items-center gap-x-4 rounded'>
           <div className='pl-2'>
-            <p className={`${isLoading && 'animate-pulse'} font-semibold text-teal-100`} ref={excuseTextRef}>{ (isLoading && 'Patience...') || (isError && 'Awh snap...') || excuse?.excuse}</p>
+            <p className={`${isLoading && 'animate-pulse'} font-semibold text-teal-100`} ref={excuseTextRef}>{ (isLoading && !excuse && 'Patience...') || (isError && 'Awh snap...') || excuse?.excuse}</p>
           </div>
         </div>
 
