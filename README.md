@@ -4,7 +4,7 @@
 <br>
   <h4 align="center">
 
-[Access here](https://harshp20.github.io/Excuse-Maker-React-Tailwind/)
+[Access here](https://harshp20.github.io/Excuse-Maker)
 
 </h4>
   <h3 align='center'>Excuses for all your needs</h3>
